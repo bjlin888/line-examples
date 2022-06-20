@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-6)sh$$4ky+7j0qms6y3a)84&7pkmis@nf9^yv%zq(5&9jq4o!8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'b70b-150-116-105-215.jp.ngrok.io']
+ALLOWED_HOSTS = ['127.0.0.1', '1758-150-116-105-215.jp.ngrok.io']
 
 
 # Application definition
@@ -121,3 +121,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Line Message API settings
+LINE_ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'
+
+LINE_CHANNEL_SECRET = 'YOUR_SECRET'
+
+MSG_COUNTS = 0

@@ -19,6 +19,7 @@ from linebot.models import (
 
 line_bot_api = LineBotApi(settings.LINE_ACCESS_TOKEN)
 parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
+msg_counts = settings.MSG_COUNTS;
 
 @csrf_exempt
 def callback(request=HttpRequest):
@@ -30,6 +31,8 @@ def callback(request=HttpRequest):
     pid = str(os.getpid())
     try:
         events = parser.parse(body, signature)  # 傳入的事件
+        settings.MSG_COUNTS += 1
+        countstr = str(settings.MSG_COUNTS)
     except InvalidSignatureError:
         return HttpResponseForbidden()
     except LineBotApiError:
@@ -37,15 +40,17 @@ def callback(request=HttpRequest):
 
     for event in events:
         if isinstance(event, MessageEvent):  # 如果有訊息事件
+            log = 'pid: ' + pid + ' - ' + event.message.text + ' counts: ' + countstr
+            print(log)
             line_bot_api.reply_message(  # 回復傳入的訊息文字
                 event.reply_token,
-                TextSendMessage(text='pid: ' + pid + ' - ' + event.message.text)
+                TextSendMessage(text=log)
             )
     return HttpResponse()
 
 @csrf_exempt
 def test(request=HttpRequest):
     pid = str(os.getpid())
-    # time.sleep(1)
+    time.sleep(0.5)
     timeinmillionsec = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     return HttpResponse('datetime in million secs:' + timeinmillionsec + ' - request was processed by pid: '  + pid)
