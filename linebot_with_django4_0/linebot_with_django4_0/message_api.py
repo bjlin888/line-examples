@@ -1,4 +1,5 @@
 import os
+import time
 from datetime import datetime
 
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
@@ -45,5 +46,6 @@ def callback(request=HttpRequest):
 @csrf_exempt
 def test(request=HttpRequest):
     pid = str(os.getpid())
+    # time.sleep(1)
     timeinmillionsec = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     return HttpResponse('datetime in million secs:' + timeinmillionsec + ' - request was processed by pid: '  + pid)
