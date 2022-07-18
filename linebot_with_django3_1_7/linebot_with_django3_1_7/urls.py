@@ -21,4 +21,5 @@ from . import message_api
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('callback/', message_api.callback),
+    path('test/', message_api.test),
 ]

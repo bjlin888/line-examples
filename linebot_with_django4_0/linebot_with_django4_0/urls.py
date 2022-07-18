@@ -19,7 +19,7 @@ from django.urls import path
 from . import message_api
 
 urlpatterns = [
+    path('test/', message_api.test),
     path('admin/', admin.site.urls),
     path('callback/', message_api.callback),
-    path('test/', message_api.test),
 ]
