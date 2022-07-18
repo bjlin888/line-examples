@@ -1,5 +1,7 @@
 import os
+import time
 from datetime import datetime
+
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
@@ -17,8 +19,9 @@ from linebot.models import (
 )
 from polls.models import Question
 
-line_bot_api = LineBotApi('dZwr0//IQjo5OjF1sE+/B6XxVxUlWyTEtV15WnhIcNAKQOe/cE1gA+Fqiz1N3fGqDSV9ntKKFbHtveX6RjUO8XvggqYlQBUai1TkzB4+ytmyatqat7HHvDEBFPB2Yr7StoU5Po61hxYLlLTq8Ui/TAdB04t89/1O/w1cDnyilFU=')
-parser = WebhookParser('6de8beb27906d080544d6db0edafe900')
+line_bot_api = LineBotApi(settings.LINE_ACCESS_TOKEN)
+parser = WebhookParser(settings.LINE_CHANNEL_SECRET)
+msg_counts = settings.MSG_COUNTS;
 
 @csrf_exempt
 def callback(request=HttpRequest):
@@ -30,6 +33,8 @@ def callback(request=HttpRequest):
     pid = str(os.getpid())
     try:
         events = parser.parse(body, signature)  # 傳入的事件
+        settings.MSG_COUNTS += 1
+        countstr = str(settings.MSG_COUNTS)
     except InvalidSignatureError:
         return HttpResponseForbidden()
     except LineBotApiError:
@@ -37,9 +42,11 @@ def callback(request=HttpRequest):
 
     for event in events:
         if isinstance(event, MessageEvent):  # 如果有訊息事件
+            log = 'pid: ' + pid + ' - ' + event.message.text + ' counts: ' + countstr
+            print(log)
             line_bot_api.reply_message(  # 回復傳入的訊息文字
                 event.reply_token,
-                TextSendMessage(text='pid: ' + pid + ' - ' + event.message.text)
+                TextSendMessage(text=log)
             )
     return HttpResponse()
 
